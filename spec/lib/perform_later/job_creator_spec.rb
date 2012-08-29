@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PerformLater::JobCreator do
   
-  let(:job)    {PerformLater::JobCreator.new("some_queue", "WorkerClass", "Klass_name", 2, :the_method)}
+  let(:job)    {PerformLater::JobCreator.new(queue: "some_queue", worker: "WorkerClass", klass_name: "Klass_name", id: 2, method: :the_method)}
   let(:delay)  {42}
 
   describe :enqueue do

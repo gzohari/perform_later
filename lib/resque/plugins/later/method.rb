@@ -20,7 +20,7 @@ module Resque::Plugins::Later::Method
           Resque.redis.set(digest, 'EXISTS')
         end
 
-        job = PerformLater::JobCreator.new(queue, klass, send(:class).name, send(:id), "now_#{method_name}", *args)
+        job = PerformLater::JobCreator.new({queue: queue, worker: klass, klass_name: send(:class).name, id: send(:id), method: "now_#{method_name}"}, *args)
         job.enqueue(delay)
       end
     end
@@ -31,7 +31,7 @@ module Resque::Plugins::Later::Method
     return perform_now(method, args) if plugin_disabled?
 
     worker  = PerformLater::Workers::ActiveRecord::Worker
-    job     = PerformLater::JobCreator.new(queue, worker, self.class.name, self.id, method, *args) 
+    job     = PerformLater::JobCreator.new({queue: queue, worker: worker, klass_name: self.class.name, id: self.id, method: method}, *args) 
     enqueue_in_resque_or_send(job)
   end
 
@@ -40,7 +40,7 @@ module Resque::Plugins::Later::Method
     return "AR EXISTS!" if loner_exists(method, args)
     
     worker  = PerformLater::Workers::ActiveRecord::LoneWorker
-    job     = PerformLater::JobCreator.new(queue, worker, self.class.name, self.id, method, *args) 
+    job     = PerformLater::JobCreator.new({queue: queue, worker: worker, klass_name: self.class.name, id: self.id, method: method}, *args) 
     enqueue_in_resque_or_send(job)
   end
 
@@ -48,7 +48,7 @@ module Resque::Plugins::Later::Method
     return perform_now(method, args) if plugin_disabled?
 
     worker  = PerformLater::Workers::ActiveRecord::Worker
-    job     = PerformLater::JobCreator.new(queue, worker, self.class.name, self.id, method, *args) 
+    job     = PerformLater::JobCreator.new({queue: queue, worker: worker, klass_name: self.class.name, id: self.id, method: method}, *args) 
     enqueue_in_resque_or_send(job, delay)
   end
   
@@ -56,7 +56,7 @@ module Resque::Plugins::Later::Method
     return  perform_now(method, args) if plugin_disabled?
 
     worker  = PerformLater::Workers::ActiveRecord::LoneWorker
-    job     = PerformLater::JobCreator.new(queue, worker, self.class.name, self.id, method, *args) 
+    job     = PerformLater::JobCreator.new({queue: queue, worker: worker, klass_name: self.class.name, id: self.id, method: method}, *args) 
     enqueue_in_resque_or_send(job, delay)
   end
 

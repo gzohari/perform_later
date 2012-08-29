@@ -4,13 +4,14 @@ module PerformLater
     attr_reader :queue, :worker, :klass_name, :id, :method
     attr_accessor :args
 
-    def initialize(queue, worker, klass_name, id, method, *args)
-      @queue       = queue
-      @worker      = worker
-      @klass_name  = klass_name
-      @id          = id
-      @method      = method
-      @args        = args
+    def initialize(opts, *args)
+      defaults = {id: nil}
+      defaults.merge!(opts)
+
+      opts.each do |k,v|
+        instance_variable_set("@#{k}", v) unless v.nil?
+      end
+      @args = args
     end
 
     def enqueue(delay=nil)
