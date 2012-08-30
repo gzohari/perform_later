@@ -8,10 +8,12 @@ module PerformLater
       defaults = {id: nil}
       defaults.merge!(opts)
 
-      opts.each do |k,v|
-        instance_variable_set("@#{k}", v) unless v.nil?
-      end
-      @args = args
+      @queue       = opts[:queue]
+      @worker      = opts[:worker]
+      @klass_name  = opts[:klass_name]
+      @id          = opts[:id]
+      @method      = opts[:method]
+      @args        = args
     end
 
     def enqueue(delay=nil)
