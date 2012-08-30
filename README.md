@@ -112,6 +112,16 @@ If you want the method to be a loner (only a single instance in the queue), you 
 	SomeClass.perform_later!(:queue_name, :some_more_heavy_lifting, user_id)
 ```
 
+```
+
+If you want you want to call a method after a delay, use the perform_later_in method.
+
+```ruby
+  SomeClass.perform_later_in(delay_in_seconds, :queue_name, some_heavy_lifting, user_id)
+```
+
+```
+
 ## The params parser
 `perform_later` has a special class called `ArgsParser`, this class is in charge of *translating* the args you are passing into params that can actually be serialized to JSON cleanly.
 
