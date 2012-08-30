@@ -115,9 +115,7 @@ If you want the method to be a loner (only a single instance in the queue), you 
 If you want you want to call a method after a delay, use the perform_later_in method.
 
 ```ruby
-  SomeClass.perform_later_in(delay_in_seconds, :queue_name, some_heavy_lifting, user_id)
-```
-
+        SomeClass.perform_later_in(delay_in_seconds, :queue_name, some_heavy_lifting, user_id)
 ```
 
 ## The params parser
