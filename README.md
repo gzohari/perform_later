@@ -75,7 +75,7 @@ end
 	u.long_running_method # Method will be queued into the :generic queue
 	u.long_running_method_2 # Method will be queued into :some_queue_name queue
 	u.lonely_long_running_method # Method will be queued into the :some_queue_name queue, only a single instance of this method can exist in the queue.
-        u.delayed_long_running_method # Method will be queued into :some_queue_name queue only after 30 seconds have passed.
+	u.delayed_long_running_method # Method will be queued into :some_queue_name queue only after 30 seconds have passed.
 ```
 
 You can of course choose to run the method off the queue, just prepend `now_` to the method name and it will be executed in sync.
@@ -112,10 +112,10 @@ If you want the method to be a loner (only a single instance in the queue), you 
 	SomeClass.perform_later!(:queue_name, :some_more_heavy_lifting, user_id)
 ```
 
-If you want you want to call a method after a delay, use the perform_later_in method.
+If you want you want to call a method after a delay, use the `perform_later_in` method.
 
 ```ruby
-        SomeClass.perform_later_in(delay_in_seconds, :queue_name, some_heavy_lifting, user_id)
+	SomeClass.perform_later_in(delay_in_seconds, :queue_name, some_heavy_lifting, user_id)
 ```
 
 ## The params parser
