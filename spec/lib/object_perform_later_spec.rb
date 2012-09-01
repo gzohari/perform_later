@@ -5,6 +5,9 @@ class DummyClass
         
   end
 
+  def self.do_something_later
+  end
+
   def self.do_something_with_string(value)
     value
   end
@@ -55,6 +58,14 @@ describe ObjectPerformLater do
 
     Resque.peek(:generic, 0, 20).length.should == 1
   end
+
+  it "should delay enqueuing for the duration of time given, if delay time is given" do
+    enqueue_in, actual_enqueue = 5, Time.now + 5
+    PerformLater.config.stub!(:enabled?).and_return(true)
+    DummyClass.perform_later_in(enqueue_in, :generic, :do_something_later)
+    Resque.redis.llen("delayed:#{actual_enqueue.to_i}").should == 1
+  end
+
 
   describe "When Enabled" do
     let(:user) { User.create }
@@ -138,4 +149,32 @@ describe ObjectPerformLater do
       DummyClass.perform_later!(:generic, :do_something_with_multiple_args, u, {a: 2}).should == "#{u}, {:a=>2}"
     end
   end
+
+  describe :perform_later_in do
+    before(:each) do
+      PerformLater.config.stub!(:enabled?).and_return(false)
+    end
+    it "should pass the correct value (String)" do
+      DummyClass.perform_later_in(5, :generic, :do_something_with_string, "Avi Tzurel").should == "Avi Tzurel"
+    end
+
+    it "should pass the correct value (AR object)" do
+      user = User.create
+      DummyClass.perform_later_in(5, :generic, :do_something_with_user, user).should == user
+    end
+
+    it "should pass the correct value (optional hash)" do
+      DummyClass.perform_later_in(5, :generic, :do_something_with_optional_hash).should == true
+    end
+
+    it "should pass multiple args" do
+      DummyClass.perform_later_in(5, :generic, :do_something_with_multiple_args, 1, 2).should == "1, 2"
+    end
+
+    it "should pass AR and hash" do
+      u = User.create
+      DummyClass.perform_later_in(5, :generic, :do_something_with_multiple_args, u, {a: 2}).should == "#{u}, {:a=>2}"
+    end
+  end
+
 end
